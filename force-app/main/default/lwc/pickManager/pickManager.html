@@ -79,7 +79,8 @@
                                             <lightning-combobox name={ind} label="Winner" value={pick.Winner__c} placeholder="Select Winner" options={teamOptions} onchange={setWinner}></lightning-combobox>
                                         </td>
                                         <td data-label="Assigned Points">
-                                            <lightning-input type="text" value={pick.Assigned_Points__c} placeholder="Assigned Points" name={ind} onchange={setAssignedPoints}>></lightning-input>
+                                            <!--<lightning-input type="text" value={pick.Assigned_Points__c} placeholder="Assigned Points" name={ind} onchange={setAssignedPoints}>></lightning-input>-->
+                                            <lightning-combobox name={ind} label="Assigned Points" value={pick.Assigned_Points__c} placeholder="Set a point value" options={pointOptions} onchange={setAssignedPoints}></lightning-combobox>
                                         </td>
                                         <td data-label="Year">
                                             <lightning-record-view-form record-id={selectedYear} object-api-name="Year__c">

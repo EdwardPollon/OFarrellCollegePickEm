@@ -76,4 +76,29 @@ public with sharing class PickManager {
         Database.insert(pickList);
         return pickList;
     }
+
+    @AuraEnabled
+    public static List<String> getAvailablePointValues(Id yrId, String participantId){
+        List<Pick__c> currentPicks = [SELECT Id, Assigned_Points__c FROM Pick__c WHERE Year__c = :yrId AND Participant__c = :participantId];
+        Map<Decimal,Decimal> usedPointValues = new Map<Decimal,Decimal>();
+        for(Pick__c p : currentPicks){
+            usedPointValues.put(p.Assigned_Points__c, p.Assigned_Points__c);
+        }
+        List<Bowl_Game__c> bowlGames = [SELECT Id FROM Bowl_Game__c WHERE Year__c = :yrId];
+        Map<Decimal, Decimal> availablePointValues = new Map<Decimal, Decimal>();
+
+        for(Integer i=1; i<=bowlGames.size(); i++) {
+            if(!usedPointValues.containsKey(i)){
+                availablePointValues.put(i, i);
+            }
+        }
+        System.debug('available point values: ' + availablePointValues.values());
+        //return availablePointValues.values();
+        List<String> availablePointValuesList = new List<String>();
+        for(Decimal value : availablePointValues.values()){
+            availablePointValuesList.add(string.valueOf(value));
+        }
+        System.debug('List actually returned: ' + availablePointValuesList);
+        return availablePointValuesList;
+    }
 }

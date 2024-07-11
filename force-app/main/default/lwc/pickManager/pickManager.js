@@ -8,6 +8,7 @@ import getBowlGameName from '@salesforce/apex/PickManager.getBowlGameName';
 import validatePasscode from '@salesforce/apex/PickManager.validatePasscode';
 import getCurrentParticipantId from '@salesforce/apex/PickManager.getCurrentParticipantId';
 import getActiveYearId from '@salesforce/apex/PickManager.getActiveYearId';
+import getAvailablePointValues from '@salesforce/apex/PickManager.getAvailablePointValues';
 
 export default class MultiRecordCreation extends LightningElement {
     @track pickDataWrp;
@@ -20,6 +21,7 @@ export default class MultiRecordCreation extends LightningElement {
     @track currentYearId;
     @track teamOptions;
     @track gameOptions;
+    @track pointOptions;
 
     @wire(getActiveYearId)
     wiredYear({error,data}){
@@ -84,9 +86,24 @@ export default class MultiRecordCreation extends LightningElement {
                 getCurrentParticipantId({passcode: passcodeInput}).then(result => {
                     console.log('participant Id: ' + result);
                     this.participantId = result;
+                    getAvailablePointValues({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
+                        console.log('point values returned: ' + result);
+                        if(result){
+                            let options = [];            
+                            for (var i=0 ; i<result.length ; i++) {
+                                options.push({ label: result[i], value: result[i] });
+                            }
+                            this.pointOptions = options;
+                        } else if(error){
+                            window.alert(JSON.stringify(error));
+                        }
+                    }).catch(error => {
+                        window.alert(JSON.stringify(error));
+                    })
                 }).catch(error => {
                     window.alert(JSON.stringify(error));
                 })
+                console.log('current year id: ' + this.currentYearId);
             }
         }).catch(error => {
             window.alert(JSON.stringify(error));
@@ -95,7 +112,7 @@ export default class MultiRecordCreation extends LightningElement {
 
     deleteRecord(event){
         const selectedPick = this.pickDataWrp[event.target.value];
-        window.alert(JSON.stringify(this.pickDataWrp) + ' & ' + event.target.value + ' & ' + JSON.stringify(selectedPick));
+        //window.alert(JSON.stringify(this.pickDataWrp) + ' & ' + event.target.value + ' & ' + JSON.stringify(selectedPick));
         deletePickHandler({pickId: selectedPick.Id, yrId: selectedPick.Year__c}).then(result => {
             this.pickDataWrp = result;
         }).catch(error => {
@@ -219,6 +236,20 @@ export default class MultiRecordCreation extends LightningElement {
                 this.pickDataWrp = newPickList;
                 this.blankRow = []; 
                 this.index = newPickList.length;
+                getAvailablePointValues({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
+                    console.log('point values returned: ' + result);
+                    if(result){
+                        let options = [];            
+                        for (var i=0 ; i<result.length ; i++) {
+                            options.push({ label: result[i], value: result[i] });
+                        }
+                        this.pointOptions = options;
+                    } else if(error){
+                        window.alert(JSON.stringify(error));
+                    }
+                }).catch(error => {
+                    window.alert(JSON.stringify(error));
+                })
                 //ADD LOGIC HERE TO REMOVE THE SELECTED BOWL GAME FROM THE LIST OF GAMES
             }).catch(error => {
                 window.alert('Please contact system admin: ' + JSON.stringify(error));
