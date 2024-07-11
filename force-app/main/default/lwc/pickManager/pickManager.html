@@ -27,9 +27,9 @@
                             <th class="" scope="col">
                                 <div class="slds-truncate" title="Assigned Points">Assigned Points</div>
                             </th>
-                            <th class="" scope="col">
+                            <!--<th class="" scope="col">
                                 <div class="slds-truncate" title="Year">Year</div>
-                            </th>
+                            </th>-->
                             <th class="" scope="col">
                                 <div class="slds-truncate" title="Action">Action</div>
                             </th>
@@ -53,9 +53,9 @@
                                         <td data-label="Assigned Points">
                                             <div class="slds-truncate" title="Assigned Points">{pick.Assigned_Points__c}</div>
                                         </td>
-                                        <td data-label="Year">
+                                        <!--<td data-label="Year">
                                             <div class="slds-truncate" title="Year">{yearName}</div>
-                                        </td>
+                                        </td>-->
                                         <td data-label="Action">
                                             <div class="slds-truncate" title="Action">
                                                 <lightning-button label="Delete" variant="neutral" value={index} onclick={deleteRecord}></lightning-button>
@@ -82,11 +82,11 @@
                                             <!--<lightning-input type="text" value={pick.Assigned_Points__c} placeholder="Assigned Points" name={ind} onchange={setAssignedPoints}>></lightning-input>-->
                                             <lightning-combobox name={ind} label="Assigned Points" value={pick.Assigned_Points__c} placeholder="Set a point value" options={pointOptions} onchange={setAssignedPoints}></lightning-combobox>
                                         </td>
-                                        <td data-label="Year">
+                                        <!--<td data-label="Year">
                                             <lightning-record-view-form record-id={selectedYear} object-api-name="Year__c">
                                                 <lightning-output-field field-name="Name" variant="label-hidden"></lightning-output-field>
                                             </lightning-record-view-form>
-                                        </td>
+                                        </td>-->
                                         <td data-label="Action">
                                             <lightning-button label="Remove" variant="neutral" value={ind} onclick={removeRow}></lightning-button>
                                             <lightning-button name="singleRowSave" label="Save Pick" class="slds-p-around_xx-small" variant="success" onclick={saveData}></lightning-button>
