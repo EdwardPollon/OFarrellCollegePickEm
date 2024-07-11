@@ -1,3 +1,5 @@
+/*This class will make the callout to the college football API and return the bowl game data for a specified year.
+*/
 public class CollegeFootballCallout {
     public static void collegeFootballCallout() {
         
