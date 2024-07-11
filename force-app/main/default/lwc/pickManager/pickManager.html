@@ -1,0 +1,109 @@
+<template>
+    <lightning-card  title="">
+        <div class="slds-p-horizontal_small">
+            <lightning-input type="text" label="Enter your 4 digit passcode" onchange={handlePasscodeChange}></lightning-input>
+            <!--<lightning-record-edit-form object-api-name="Pick__c" lwc:if={validPasscode}>
+                <lightning-layout multiple-rows>
+                    <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="6" padding="around-small">
+                        <lightning-input-field field-name="Year__c" onchange={handleYearId}></lightning-input-field>
+                        <lightning-input-field field-name="Participant__c" onchange={handlePickedById}></lightning-input-field>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-record-edit-form>--><br/>
+           <template lwc:if={validPasscode} >
+                <div>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Select Pick">Select Pick</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Bowl Game">Bowl Game</div>
+                            </th>  
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Winner">Winner</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Assigned Points">Assigned Points</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Year">Year</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Action">Action</div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <template if:true={pickDataWrp}>
+                                <template for:each={pickDataWrp} for:item="pick" for:index="index">
+                                    <tr class="slds-hint-parent" key={pick.Id}>
+                                        <td data-label="Select Pick">
+                                            <div class="slds-truncate" title="Select Pick">
+                                                <lightning-input type="checkbox" disabled={disabledCheckbox} name="input1"></lightning-input>
+                                            </div>
+                                        </td>
+                                        <td data-label="Bowl Game">
+                                            <div class="slds-truncate" title="Bowl Game">{pick.Bowl_Game_Name__c}</div>
+                                        </td>
+                                        <td data-label="Winner">
+                                            <div class="slds-truncate" title="Winner">{pick.Winner__c}</div>
+                                        </td>
+                                        <td data-label="Assigned Points">
+                                            <div class="slds-truncate" title="Assigned Points">{pick.Assigned_Points__c}</div>
+                                        </td>
+                                        <td data-label="Year">
+                                            <div class="slds-truncate" title="Year">{yearName}</div>
+                                        </td>
+                                        <td data-label="Action">
+                                            <div class="slds-truncate" title="Action">
+                                                <lightning-button label="Delete" variant="neutral" value={index} onclick={deleteRecord}></lightning-button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </template>
+                            <template if:true={blankRow}>
+                                <template for:each={blankRow} for:item="pick" for:index="ind">
+                                    <tr class="slds-hint-parent" key={pick.Id}>
+                                        <td data-label="Select Pick">
+                                            <div class="slds-truncate" title="Select Pick">
+                                                <lightning-input type="checkbox" name={ind} value={pick.isChecked} onchange={setCheckBox}></lightning-input>
+                                            </div>
+                                        </td>
+                                        <td data-label="Bowl Game">
+                                            <lightning-combobox name={ind} label="Bowl Games" value={pick.Bowl_Game__c} placeholder="Select Bowl Game" options={gameOptions} onchange={setGame}></lightning-combobox>
+                                        </td>
+                                        <td data-label="Winner">
+                                            <lightning-combobox name={ind} label="Winner" value={pick.Winner__c} placeholder="Select Winner" options={teamOptions} onchange={setWinner}></lightning-combobox>
+                                        </td>
+                                        <td data-label="Assigned Points">
+                                            <lightning-input type="text" value={pick.Assigned_Points__c} placeholder="Assigned Points" name={ind} onchange={setAssignedPoints}>></lightning-input>
+                                        </td>
+                                        <td data-label="Year">
+                                            <lightning-record-view-form record-id={selectedYear} object-api-name="Year__c">
+                                                <lightning-output-field field-name="Name" variant="label-hidden"></lightning-output-field>
+                                            </lightning-record-view-form>
+                                        </td>
+                                        <td data-label="Action">
+                                            <lightning-button label="Remove" variant="neutral" value={ind} onclick={removeRow}></lightning-button>
+                                            <lightning-button name="singleRowSave" label="Save Pick" class="slds-p-around_xx-small" variant="success" onclick={saveData}></lightning-button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+        </div>
+        <div slot="footer">
+            <template lwc:if={validPasscode}>
+                <!--<lightning-button name="multipleRowSave" label="Save Picks" class="slds-p-around_xx-small" variant="brand-outline" onclick={saveData}></lightning-button>-->
+                <lightning-button name="multipleRowAddition" label="Add Row" class="slds-p-around_xx-small" variant="brand" onclick={addRow}></lightning-button>
+                <lightning-button name="multipleRowRemoval" class="slds-p-around_xx-small" label="Remove Row" variant="destructive" onclick={removeRow}></lightning-button>
+            </template>
+        </div>
+    </lightning-card> 
+</template>
