@@ -1,5 +1,5 @@
 <template>
-    <lightning-card  title="">
+    <lightning-card  title="College Football Bowl Pick Manager">
         <div class="slds-p-horizontal_small">
             <lightning-formatted-text lwc:if={validPasscode} value={welcomeMessage}></lightning-formatted-text>
             <lightning-input lwc:else type="text" label="Enter your 4 digit passcode" onchange={handlePasscodeChange}></lightning-input>
@@ -59,7 +59,7 @@
                                         </td>-->
                                         <td data-label="Action">
                                             <div class="slds-truncate" title="Action">
-                                                <lightning-button label="Delete" variant="neutral" value={index} onclick={deleteRecord}></lightning-button>
+                                                <lightning-button label="Delete" variant="destructive" value={index} onclick={deleteRecord}></lightning-button>
                                             </div>
                                         </td>
                                     </tr>
