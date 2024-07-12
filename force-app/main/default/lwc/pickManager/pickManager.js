@@ -1,5 +1,5 @@
 import { LightningElement, track, wire, api} from 'lwc';
-import pickRecords from '@salesforce/apex/PickManager.getRelatedPicks';
+import getCurrentParticipantsPicks from '@salesforce/apex/PickManager.getCurrentParticipantsPicks';
 import deletePickHandler from '@salesforce/apex/PickManager.deletePickHandler';
 import insertPickData from '@salesforce/apex/PickManager.savePickData';
 import getTeams from '@salesforce/apex/PickManager.getTeams';
@@ -7,8 +7,10 @@ import getBowlGames from '@salesforce/apex/PickManager.getBowlGames';
 import getBowlGameName from '@salesforce/apex/PickManager.getBowlGameName';
 import validatePasscode from '@salesforce/apex/PickManager.validatePasscode';
 import getCurrentParticipantId from '@salesforce/apex/PickManager.getCurrentParticipantId';
+import getCurrentParticipantFirstName from '@salesforce/apex/PickManager.getCurrentParticipantFirstName';
 import getActiveYearId from '@salesforce/apex/PickManager.getActiveYearId';
 import getAvailablePointValues from '@salesforce/apex/PickManager.getAvailablePointValues';
+import getAvailableBowlGames from '@salesforce/apex/PickManager.getAvailableBowlGames';
 
 export default class MultiRecordCreation extends LightningElement {
     @track pickDataWrp;
@@ -18,6 +20,8 @@ export default class MultiRecordCreation extends LightningElement {
     @track index = 0;
     @track selectedParticipant;
     @track participantId;
+    @track participantFirstName;
+    @track welcomeMessage;
     @track currentYearId;
     @track teamOptions;
     @track gameOptions;
@@ -29,12 +33,6 @@ export default class MultiRecordCreation extends LightningElement {
             this.currentYearId = data;
             if(this.currentYearId !== undefined){
                 this.pickDataWrp = [];
-                pickRecords({yrId : this.currentYearId}).then(result => {
-                    this.pickDataWrp = result;
-                    this.index = result.length;
-                }).catch(error => {
-                    console.log(error);
-                })
             } else{
                 this.blankRow = []; 
                 this.index = 0;
@@ -60,20 +58,21 @@ export default class MultiRecordCreation extends LightningElement {
     //     }
     // }
 
-    @wire(getBowlGames, {yrId: '$currentYearId'})
-    wiredGames({error, data}) {
-        if(data){
-            let options = [];
-            console.log('Bowl Games: ' + data);
+    // @wire(getBowlGames, {yrId: '$currentYearId'})
+    // wiredGames({error, data}) {
+    //     if(data){
+    //         let options = [];
+    //         console.log('Bowl Games: ' + data);
 
-            for (var key in data) {
-                options.push({ label: data[key].Name, value: data[key].Id });
-            }
-            this.gameOptions = options;
-        }else if(error){
-            window.alert(JSON.stringify(error));
-        }
-    }
+    //         for (var key in data) {
+    //             options.push({ label: data[key].Name, value: data[key].Id });
+    //         }
+    //         this.gameOptions = options;
+    //         console.log('gameOptions: ' + this.gameOptions);
+    //     }else if(error){
+    //         window.alert(JSON.stringify(error));
+    //     }
+    // }
 
     handlePasscodeChange(event){
         let passcodeInput = event.target.value;
@@ -86,6 +85,13 @@ export default class MultiRecordCreation extends LightningElement {
                 getCurrentParticipantId({passcode: passcodeInput}).then(result => {
                     console.log('participant Id: ' + result);
                     this.participantId = result;
+                    getCurrentParticipantFirstName({participantId: this.participantId}).then(result => {
+                        console.log('participant first name: ' + result);
+                        this.participantFirstName = result;
+                        this.setWelcomeMessage(this.participantFirstName);
+                        }).catch(error => {
+                            window.alert(JSON.stringify(error));
+                        })
                     getAvailablePointValues({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
                         console.log('point values returned: ' + result);
                         if(result){
@@ -99,6 +105,26 @@ export default class MultiRecordCreation extends LightningElement {
                         }
                     }).catch(error => {
                         window.alert(JSON.stringify(error));
+                    })
+                    getAvailableBowlGames({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
+                        console.log('bowl games returned: ' + result);
+                        if(result){
+                            let options = [];            
+                            for (var i=0 ; i<result.length ; i++) {
+                                options.push({ label: result[i].Name, value: result[i].Id });
+                            }
+                            this.gameOptions = options;
+                        } else if(error){
+                            window.alert(JSON.stringify(error));
+                        }
+                    }).catch(error => {
+                        window.alert(JSON.stringify(error));
+                    })
+                    getCurrentParticipantsPicks({yrId : this.currentYearId, participantId : this.participantId}).then(result => {
+                        this.pickDataWrp = result;
+                        this.index = result.length;
+                    }).catch(error => {
+                        console.log(error);
                     })
                 }).catch(error => {
                     window.alert(JSON.stringify(error));
@@ -129,6 +155,10 @@ export default class MultiRecordCreation extends LightningElement {
         newPick.isChecked = false;
         blankRow.push(newPick);
         this.blankRow = blankRow; 
+    }
+
+    setWelcomeMessage(firstName){
+        this.welcomeMessage = 'Hey ' + firstName + '! Place your picks below.'
     }
 
     // addFirstRow(){
@@ -244,6 +274,20 @@ export default class MultiRecordCreation extends LightningElement {
                             options.push({ label: result[i], value: result[i] });
                         }
                         this.pointOptions = options;
+                    } else if(error){
+                        window.alert(JSON.stringify(error));
+                    }
+                }).catch(error => {
+                    window.alert(JSON.stringify(error));
+                })
+                getAvailableBowlGames({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
+                    console.log('bowl games returned: ' + result);
+                    if(result){
+                        let options = [];            
+                        for (var i=0 ; i<result.length ; i++) {
+                            options.push({ label: result[i].Name, value: result[i].Id });
+                        }
+                        this.gameOptions = options;
                     } else if(error){
                         window.alert(JSON.stringify(error));
                     }

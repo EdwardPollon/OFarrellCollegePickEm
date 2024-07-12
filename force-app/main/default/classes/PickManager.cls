@@ -44,8 +44,8 @@ public with sharing class PickManager {
     }
 
     @AuraEnabled
-    public static List<Pick__c> getRelatedPicks(Id yrId){
-        return [Select Id, Bowl_Game__c, Bowl_Game_Name__c, Bowl_Game__r.Name, Winner__c, Assigned_Points__c, Year__r.Name from Pick__c where Year__c = :yrId];
+    public static List<Pick__c> getCurrentParticipantsPicks(Id yrId, Id participantId){
+        return [Select Id, Bowl_Game__c, Bowl_Game_Name__c, Bowl_Game__r.Name, Winner__c, Assigned_Points__c, Year__r.Name from Pick__c where Year__c = :yrId AND Participant__c = :participantId];
     }
 
     @AuraEnabled
@@ -62,6 +62,11 @@ public with sharing class PickManager {
     @AuraEnabled
     public static String getCurrentParticipantId(String passcode){
         return [SELECT Id FROM Year_Participated__c WHERE Passcode__c = :passcode LIMIT 1].Id;
+    }
+
+    @AuraEnabled
+    public static String getCurrentParticipantFirstName(String participantId){
+        return [SELECT Id, Participant__r.First_Name__c FROM Year_Participated__c WHERE Id = :participantId LIMIT 1].Participant__r.First_Name__c;
     }
 
     @AuraEnabled
@@ -100,5 +105,13 @@ public with sharing class PickManager {
         }
         System.debug('List actually returned: ' + availablePointValuesList);
         return availablePointValuesList;
+    }
+
+    @AuraEnabled
+    public static List<Bowl_Game__c> getAvailableBowlGames(Id yrId, String participantId){
+        List<Bowl_Game__c> availableBowlGames = [SELECT Id, Name FROM Bowl_Game__c 
+                                                WHERE Year__c = :yrId 
+                                                AND Id NOT IN (SELECT Bowl_Game__c FROM Pick__c WHERE Participant__c = :participantId)];
+        return availableBowlGames;
     }
 }
