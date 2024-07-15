@@ -1,7 +1,9 @@
 <template>
     <lightning-card  title="College Football Bowl Pick Manager">
         <div class="slds-p-horizontal_small">
-            <lightning-formatted-text lwc:if={validPasscode} value={welcomeMessage}></lightning-formatted-text>
+            <h2 lwc:if={validPasscode}>
+                <lightning-formatted-text value={welcomeMessage}></lightning-formatted-text>
+            </h2>
             <lightning-input lwc:else type="text" label="Enter your 4 digit passcode" onchange={handlePasscodeChange}></lightning-input>
             <!--<lightning-record-edit-form object-api-name="Pick__c" lwc:if={validPasscode}>
                 <lightning-layout multiple-rows>
