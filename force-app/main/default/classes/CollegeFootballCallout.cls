@@ -1,7 +1,9 @@
 /*This class will make the callout to the college football API and return the bowl game data for a specified year.
 */
 public class CollegeFootballCallout {
-    public static void collegeFootballCallout() {
+
+    @AuraEnabled
+    public static void importBowlGames(Id yearId) {
         
         HttpRequest req = new HttpRequest();
         req.setHeader('Accept', 'application/json');
@@ -9,9 +11,9 @@ public class CollegeFootballCallout {
         req.setMethod('GET');
         Http http = new Http();
 
-        String baseEndpoint = 'callout:CollegeFootballAPI' + '/games?seasonType=postseason&year=2023&division=fbs';
+        Year__c year = [SELECT Id, Name FROM Year__c WHERE Id = :yearId LIMIT 1];
+        String baseEndpoint = 'callout:CollegeFootballAPI' + '/games?seasonType=postseason&year=' + year.Name + '&division=fbs';
         List<Bowl_Game__c> bowlGamesToCreate = new List<Bowl_Game__c>();
-        List<Year__c> years = [SELECT Id FROM Year__c WHERE Name = '2023'];
 
         req.setEndpoint(baseEndpoint);
         HttpResponse res = http.send(req);
@@ -20,15 +22,22 @@ public class CollegeFootballCallout {
         for(CollegeFootballWrapper bowlGame : wrapper){
             Bowl_Game__c bg = new Bowl_Game__c();
             bg.Name = bowlGame.notes;
-            bg.Year__c = years[0].Id;
+            bg.Year__c = yearId;
             bg.Game_ID__c = String.valueOf(bowlGame.id);
             bg.Home_Team__c = bowlGame.home_team;
             bg.Home_Points__c = bowlGame.home_points;
             bg.Away_Team__c = bowlGame.away_team;
             bg.Away_Points__c = bowlGame.away_points;
+            bg.Start_Date__c = bowlGame.start_date;
+            bg.Completed__c = bowlGame.completed;
             bowlGamesToCreate.add(bg);
         }
         System.debug('Number Of Bowl Games: ' + wrapper.size());
         insert bowlGamesToCreate;
+    }
+
+    @AuraEnabled
+    public static void updateBowlGames(){
+
     }
 }
