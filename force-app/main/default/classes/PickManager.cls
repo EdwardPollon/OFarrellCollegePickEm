@@ -65,14 +65,14 @@ public with sharing class PickManager {
     }
 
     @AuraEnabled
-    public static String getCurrentParticipantFirstName(String participantId){
-        return [SELECT Id, Participant__r.First_Name__c FROM Year_Participated__c WHERE Id = :participantId LIMIT 1].Participant__r.First_Name__c;
+    public static String getCurrentParticipantName(String participantId){
+        return [SELECT Id, Participant__r.Name FROM Year_Participated__c WHERE Id = :participantId LIMIT 1].Participant__r.Name;
     }
 
     @AuraEnabled
-    public static List<Pick__c> deletePickHandler(Id pickId, Id yrId){
+    public static List<Pick__c> deletePickHandler(Id pickId, Id yrId, Id participantId){
         Database.delete(pickId);
-        return [Select Id, Bowl_Game__c, Bowl_Game_Name__c, Winner__c, Assigned_Points__c, Year__r.Name from Pick__c where Year__c = :yrId];
+        return [Select Id, Bowl_Game__c, Bowl_Game_Name__c, Winner__c, Assigned_Points__c, Year__r.Name from Pick__c where Year__c = :yrId AND Participant__c = :participantId];
     }
 
     @AuraEnabled
@@ -97,7 +97,7 @@ public with sharing class PickManager {
                 availablePointValues.put(i, i);
             }
         }
-        System.debug('available point values: ' + availablePointValues.values());
+        System.debug('available point values after: ' + availablePointValues.values());
         //return availablePointValues.values();
         List<String> availablePointValuesList = new List<String>();
         for(Decimal value : availablePointValues.values()){

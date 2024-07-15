@@ -7,7 +7,7 @@ import getBowlGames from '@salesforce/apex/PickManager.getBowlGames';
 import getBowlGameName from '@salesforce/apex/PickManager.getBowlGameName';
 import validatePasscode from '@salesforce/apex/PickManager.validatePasscode';
 import getCurrentParticipantId from '@salesforce/apex/PickManager.getCurrentParticipantId';
-import getCurrentParticipantFirstName from '@salesforce/apex/PickManager.getCurrentParticipantFirstName';
+import getCurrentParticipantName from '@salesforce/apex/PickManager.getCurrentParticipantName';
 import getActiveYearId from '@salesforce/apex/PickManager.getActiveYearId';
 import getAvailablePointValues from '@salesforce/apex/PickManager.getAvailablePointValues';
 import getAvailableBowlGames from '@salesforce/apex/PickManager.getAvailableBowlGames';
@@ -20,12 +20,13 @@ export default class MultiRecordCreation extends LightningElement {
     @track index = 0;
     @track selectedParticipant;
     @track participantId;
-    @track participantFirstName;
+    @track participantName;
     @track welcomeMessage;
     @track currentYearId;
     @track teamOptions;
     @track gameOptions;
     @track pointOptions;
+    @track canAddRow = true;
 
     @wire(getActiveYearId)
     wiredYear({error,data}){
@@ -80,15 +81,15 @@ export default class MultiRecordCreation extends LightningElement {
             console.log('valid passcode entered?: ' + result);
             this.validPasscode = result;
             if(this.validPasscode === true){
-                this.addRow();
+                //this.addRow();
                 console.log('passcode passed to get user: ' + passcodeInput);
                 getCurrentParticipantId({passcode: passcodeInput}).then(result => {
                     console.log('participant Id: ' + result);
                     this.participantId = result;
-                    getCurrentParticipantFirstName({participantId: this.participantId}).then(result => {
-                        console.log('participant first name: ' + result);
-                        this.participantFirstName = result;
-                        this.setWelcomeMessage(this.participantFirstName);
+                    getCurrentParticipantName({participantId: this.participantId}).then(result => {
+                        console.log('participant name: ' + result);
+                        this.participantName = result;
+                        this.setWelcomeMessage(this.participantName);
                         }).catch(error => {
                             window.alert(JSON.stringify(error));
                         })
@@ -139,7 +140,7 @@ export default class MultiRecordCreation extends LightningElement {
     deleteRecord(event){
         const selectedPick = this.pickDataWrp[event.target.value];
         //window.alert(JSON.stringify(this.pickDataWrp) + ' & ' + event.target.value + ' & ' + JSON.stringify(selectedPick));
-        deletePickHandler({pickId: selectedPick.Id, yrId: selectedPick.Year__c}).then(result => {
+        deletePickHandler({pickId: selectedPick.Id, yrId: selectedPick.Year__c, participantId: this.participantId}).then(result => {
             this.pickDataWrp = result;
         }).catch(error => {
             window.alert(JSON.stringify(error));
@@ -155,10 +156,39 @@ export default class MultiRecordCreation extends LightningElement {
         newPick.isChecked = false;
         blankRow.push(newPick);
         this.blankRow = blankRow; 
+        this.canAddRow = false;
+        getAvailablePointValues({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
+            console.log('point values returned: ' + result);
+            if(result){
+                let options = [];            
+                for (var i=0 ; i<result.length ; i++) {
+                    options.push({ label: result[i], value: result[i] });
+                }
+                this.pointOptions = options;
+            } else if(error){
+                window.alert(JSON.stringify(error));
+            }
+        }).catch(error => {
+            window.alert(JSON.stringify(error));
+        })
+        getAvailableBowlGames({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
+            console.log('bowl games returned: ' + result);
+            if(result){
+                let options = [];            
+                for (var i=0 ; i<result.length ; i++) {
+                    options.push({ label: result[i].Name, value: result[i].Id });
+                }
+                this.gameOptions = options;
+            } else if(error){
+                window.alert(JSON.stringify(error));
+            }
+        }).catch(error => {
+            window.alert(JSON.stringify(error));
+        })
     }
 
-    setWelcomeMessage(firstName){
-        this.welcomeMessage = 'Hey ' + firstName + '! Place your picks below.'
+    setWelcomeMessage(Name){
+        this.welcomeMessage = 'Hey ' + Name + '! Place your picks below.'
     }
 
     // addFirstRow(){
@@ -186,6 +216,7 @@ export default class MultiRecordCreation extends LightningElement {
             blankRow.splice(event.target.value, 1);
         }
         this.blankRow = blankRow;
+        this.canAddRow = true;
     }
 
     setWinner(event){
@@ -266,6 +297,7 @@ export default class MultiRecordCreation extends LightningElement {
                 this.pickDataWrp = newPickList;
                 this.blankRow = []; 
                 this.index = newPickList.length;
+                this.canAddRow = true;
                 getAvailablePointValues({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
                     console.log('point values returned: ' + result);
                     if(result){
