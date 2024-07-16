@@ -29,7 +29,7 @@ export default class ImportBowlGames extends LightningElement {
     }
 
     updateBowlGames() {
-        //updateBowlGames({yearId: this.recordId});
+        updateBowlGames({yearId: this.recordId});
         window.location.reload();
     }
     

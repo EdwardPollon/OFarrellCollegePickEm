@@ -43,7 +43,38 @@ public class CollegeFootballCallout {
     }
 
     @AuraEnabled
-    public static void updateBowlGames(){
+    public static void updateBowlGames(Id yearId){
+        HttpRequest req = new HttpRequest();
+        req.setHeader('Accept', 'application/json');
+        req.setHeader('Content-Type', 'application/json');
+        req.setMethod('GET');
+        Http http = new Http();
 
+        Year__c year = [SELECT Id, Name FROM Year__c WHERE Id = :yearId LIMIT 1];
+        String baseEndpoint = 'callout:CollegeFootballAPI' + '/games?seasonType=postseason&year=' + year.Name + '&division=fbs';
+        List<Bowl_Game__c> bowlGamesToUpdate = new List<Bowl_Game__c>();
+        List<Bowl_Game__c> existingBowlGames = [SELECT Id, Name, Year__c, Game_ID__c, Home_Team__c, Home_Points__c, Away_Team__c, Away_Points__c, Start_Date__c, Completed__c FROM Bowl_Game__c WHERE Year__c = :yearId];
+        Map<String, Bowl_Game__c> existingBowlGamesMap = new Map<String, Bowl_Game__c>();
+        for(Bowl_Game__c bg : existingBowlGames) {
+            existingBowlGamesMap.put(bg.Game_ID__c, bg);
+        }
+
+        req.setEndpoint(baseEndpoint);
+        HttpResponse res = http.send(req);
+        List<CollegeFootballWrapper> wrapper = CollegeFootballWrapper.parse(res.getBody());
+
+        for(CollegeFootballWrapper bowlGame : wrapper){
+            Bowl_Game__c bg = new Bowl_Game__c();
+            bg.Id = existingBowlGamesMap.get(String.valueOf(bowlGame.id)).Id;
+            bg.Home_Points__c = bowlGame.home_points;
+            bg.Away_Points__c = bowlGame.away_points;
+            bg.Completed__c = bowlGame.completed;
+            bowlGamesToUpdate.add(bg);
+        }
+        try {
+            update bowlGamesToUpdate;
+        } catch (Exception e) {
+            System.debug('An error occurred when attempting to update bowl games: ' + e.getMessage());
+        }
     }
 }
