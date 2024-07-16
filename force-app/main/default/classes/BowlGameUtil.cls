@@ -9,18 +9,38 @@ public with sharing class BowlGameUtil {
             }
         }
         if(executeSumCalculation){
+            Boolean noGamesLeft = false;
             List<Year_Participated__c> yearsParticipatedToUpdate = new List<Year_Participated__c>();
-            List<AggregateResult> correctPicks = [SELECT Participant__c, Count(Id) numberOfCorrectPicks, SUM(Assigned_Points__c) earnedPoints FROM Pick__c WHERE Bowl_Game__r.Completed__c = true  AND Picked_Correctly__c = true GROUP BY Participant__c];
+            Map<Id, Year_Participated__c> yearsParticipatedToUpdateMap = new Map<Id, Year_Participated__c>();
+            List<AggregateResult> correctPicks = [SELECT Participant__c, Count(Id) numberOfCorrectPicks, SUM(Assigned_Points__c) earnedPoints FROM Pick__c WHERE Bowl_Game__r.Completed__c = true  AND Picked_Correctly__c = true AND Year__r.Active__c = true GROUP BY Participant__c];
+            List<AggregateResult> picksLeft = [SELECT Participant__c, SUM(Assigned_Points__c) availablePointsLeft FROM Pick__c WHERE Bowl_Game__r.Completed__c = false AND Year__r.Active__c = true GROUP BY Participant__c];
+            if(picksLeft.isEmpty()){
+                noGamesLeft = true;
+            }
             for(AggregateResult aggr : correctPicks) {
                 Year_Participated__c yp = new Year_Participated__c();
                 yp.Id = (Id)aggr.get('Participant__c');
                 yp.Earned_Points__c = (Double)aggr.get('earnedPoints');
                 yp.Number_of_Correct_Picks__c = (Double)aggr.get('numberOfCorrectPicks');
+                if(noGamesLeft) {
+                    yp.Available_Points_Left__c = 0;
+                }
+                yearsParticipatedToUpdateMap.put(yp.Id, yp);
                 yearsParticipatedToUpdate.add(yp);
                 System.debug('ParticipantId: ' + yp.Id);
                 System.debug('participant earned points: ' + yp.Earned_Points__c);
                 System.debug('participant correct picks: ' + yp.Number_of_Correct_Picks__c);
             }
+
+            if(!noGamesLeft) {
+                for(AggregateResult aggr : picksLeft) {
+                    Year_Participated__c yp = new Year_Participated__c();
+                    yp.Id = (Id)aggr.get('Participant__c');
+                    yearsParticipatedToUpdateMap.get(yp.Id).Available_Points_Left__c = (Double)aggr.get('availablePointsLeft');
+                    
+                }
+            }
+            
             if(!yearsParticipatedToUpdate.isEmpty()){
                 try{
                     update yearsParticipatedToUpdate;
