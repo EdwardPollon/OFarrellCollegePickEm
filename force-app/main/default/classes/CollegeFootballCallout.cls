@@ -33,7 +33,13 @@ public class CollegeFootballCallout {
             bowlGamesToCreate.add(bg);
         }
         System.debug('Number Of Bowl Games: ' + wrapper.size());
-        insert bowlGamesToCreate;
+        try {
+            insert bowlGamesToCreate;
+            year.Bowl_Games_Imported__c = true;
+            update year;
+        } catch (Exception e) {
+            System.debug('An error occurred when attempting to retrieve bowl games: ' + e.getMessage());
+        }
     }
 
     @AuraEnabled

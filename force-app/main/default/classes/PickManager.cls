@@ -111,7 +111,7 @@ public with sharing class PickManager {
     public static List<Bowl_Game__c> getAvailableBowlGames(Id yrId, String participantId){
         List<Bowl_Game__c> availableBowlGames = [SELECT Id, Name FROM Bowl_Game__c 
                                                 WHERE Year__c = :yrId 
-                                                AND Id NOT IN (SELECT Bowl_Game__c FROM Pick__c WHERE Participant__c = :participantId)];
+                                                AND Id NOT IN (SELECT Bowl_Game__c FROM Pick__c WHERE Participant__c = :participantId) ORDER BY Start_Date__c ASC];
         return availableBowlGames;
     }
 }

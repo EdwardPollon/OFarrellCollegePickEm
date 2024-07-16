@@ -46,4 +46,16 @@ public with sharing class BowlGameUtil {
             System.debug('Exception occured while updating the key participants for the active year: ' + e.getMessage());
         }
     }
+
+    @AuraEnabled
+    public static void deleteBowlGames(Id yearId){
+        try {
+            delete [SELECT Id FROM Bowl_Game__c WHERE Year__c = :yearId];
+            Year__c year = [SELECT Id, Bowl_Games_Imported__c FROM Year__c WHERE Id = :yearId];
+            year.Bowl_Games_Imported__c = false;
+            update year;
+        } catch (Exception e) {
+            System.debug('An error occurred while deleting the bowl games for the designated year.');
+        }
+    }
 }
