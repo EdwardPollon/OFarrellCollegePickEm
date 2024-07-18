@@ -45,7 +45,7 @@ public with sharing class PickManager {
 
     @AuraEnabled
     public static List<Pick__c> getCurrentParticipantsPicks(Id yrId, Id participantId){
-        return [Select Id, Bowl_Game__c, Bowl_Game_Name__c, Bowl_Game__r.Name, Winner__c, Assigned_Points__c, Year__r.Name from Pick__c where Year__c = :yrId AND Participant__c = :participantId];
+        return [Select Id, Bowl_Game__c, Bowl_Game_Name__c, Bowl_Game__r.Name, Winner__c, Assigned_Points__c, Year__r.Name from Pick__c where Year__c = :yrId AND Participant__c = :participantId ORDER BY Bowl_Game__r.Start_Date__c ASC];
     }
 
     @AuraEnabled

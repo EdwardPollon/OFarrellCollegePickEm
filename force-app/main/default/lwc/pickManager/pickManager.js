@@ -298,6 +298,7 @@ export default class MultiRecordCreation extends LightningElement {
                 this.blankRow = []; 
                 this.index = newPickList.length;
                 this.canAddRow = true;
+                this.teamOptions = [];
                 getAvailablePointValues({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
                     console.log('point values returned: ' + result);
                     if(result){
