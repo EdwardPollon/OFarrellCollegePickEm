@@ -93,34 +93,8 @@ export default class MultiRecordCreation extends LightningElement {
                         }).catch(error => {
                             window.alert(JSON.stringify(error));
                         })
-                    getAvailablePointValues({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
-                        console.log('point values returned: ' + result);
-                        if(result){
-                            let options = [];            
-                            for (var i=0 ; i<result.length ; i++) {
-                                options.push({ label: result[i], value: result[i] });
-                            }
-                            this.pointOptions = options;
-                        } else if(error){
-                            window.alert(JSON.stringify(error));
-                        }
-                    }).catch(error => {
-                        window.alert(JSON.stringify(error));
-                    })
-                    getAvailableBowlGames({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
-                        console.log('bowl games returned: ' + result);
-                        if(result){
-                            let options = [];            
-                            for (var i=0 ; i<result.length ; i++) {
-                                options.push({ label: result[i].Name, value: result[i].Id });
-                            }
-                            this.gameOptions = options;
-                        } else if(error){
-                            window.alert(JSON.stringify(error));
-                        }
-                    }).catch(error => {
-                        window.alert(JSON.stringify(error));
-                    })
+                    this.getPointValues(this.currentYearId, this.participantId);
+                    this.getBowlGames(this.currentYearId, this.participantId);
                     getCurrentParticipantsPicks({yrId : this.currentYearId, participantId : this.participantId}).then(result => {
                         this.pickDataWrp = result;
                         this.index = result.length;
@@ -131,6 +105,46 @@ export default class MultiRecordCreation extends LightningElement {
                     window.alert(JSON.stringify(error));
                 })
                 console.log('current year id: ' + this.currentYearId);
+            }
+        }).catch(error => {
+            window.alert(JSON.stringify(error));
+        })
+    }
+
+    getPointValues(yearId, participantId) {
+        getAvailablePointValues({
+            yrId: yearId, 
+            participantId: participantId
+        }).then(result => {
+            console.log('point values returned: ' + result);
+            if(result){
+                let options = [];            
+                for (var i=0 ; i<result.length ; i++) {
+                    options.push({ label: result[i], value: result[i] });
+                }
+                this.pointOptions = options;
+            } else if(error){
+                window.alert(JSON.stringify(error));
+            }
+        }).catch(error => {
+            window.alert(JSON.stringify(error));
+        })
+    }
+
+    getBowlGames(yearId, participantId) {
+        getAvailableBowlGames({
+            yrId: yearId, 
+            participantId: participantId
+        }).then(result => {
+            console.log('bowl games returned: ' + result);
+            if(result){
+                let options = [];            
+                for (var i=0 ; i<result.length ; i++) {
+                    options.push({ label: result[i].Name, value: result[i].Id });
+                }
+                this.gameOptions = options;
+            } else if(error){
+                window.alert(JSON.stringify(error));
             }
         }).catch(error => {
             window.alert(JSON.stringify(error));
@@ -157,34 +171,8 @@ export default class MultiRecordCreation extends LightningElement {
         blankRow.push(newPick);
         this.blankRow = blankRow; 
         this.canAddRow = false;
-        getAvailablePointValues({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
-            console.log('point values returned: ' + result);
-            if(result){
-                let options = [];            
-                for (var i=0 ; i<result.length ; i++) {
-                    options.push({ label: result[i], value: result[i] });
-                }
-                this.pointOptions = options;
-            } else if(error){
-                window.alert(JSON.stringify(error));
-            }
-        }).catch(error => {
-            window.alert(JSON.stringify(error));
-        })
-        getAvailableBowlGames({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
-            console.log('bowl games returned: ' + result);
-            if(result){
-                let options = [];            
-                for (var i=0 ; i<result.length ; i++) {
-                    options.push({ label: result[i].Name, value: result[i].Id });
-                }
-                this.gameOptions = options;
-            } else if(error){
-                window.alert(JSON.stringify(error));
-            }
-        }).catch(error => {
-            window.alert(JSON.stringify(error));
-        })
+        this.getPointValues(this.currentYearId, this.participantId);
+        this.getBowlGames(this.currentYearId, this.participantId);
     }
 
     setWelcomeMessage(Name){
@@ -299,34 +287,8 @@ export default class MultiRecordCreation extends LightningElement {
                 this.index = newPickList.length;
                 this.canAddRow = true;
                 this.teamOptions = [];
-                getAvailablePointValues({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
-                    console.log('point values returned: ' + result);
-                    if(result){
-                        let options = [];            
-                        for (var i=0 ; i<result.length ; i++) {
-                            options.push({ label: result[i], value: result[i] });
-                        }
-                        this.pointOptions = options;
-                    } else if(error){
-                        window.alert(JSON.stringify(error));
-                    }
-                }).catch(error => {
-                    window.alert(JSON.stringify(error));
-                })
-                getAvailableBowlGames({yrId: this.currentYearId, participantId: this.participantId}).then(result => {
-                    console.log('bowl games returned: ' + result);
-                    if(result){
-                        let options = [];            
-                        for (var i=0 ; i<result.length ; i++) {
-                            options.push({ label: result[i].Name, value: result[i].Id });
-                        }
-                        this.gameOptions = options;
-                    } else if(error){
-                        window.alert(JSON.stringify(error));
-                    }
-                }).catch(error => {
-                    window.alert(JSON.stringify(error));
-                })
+                this.getPointValues(this.currentYearId, this.participantId);
+                this.getBowlGames(this.currentYearId, this.participantId);
                 //ADD LOGIC HERE TO REMOVE THE SELECTED BOWL GAME FROM THE LIST OF GAMES
             }).catch(error => {
                 window.alert('Please contact system admin: ' + JSON.stringify(error));
