@@ -93,6 +93,7 @@
                                         <td data-label="Action">
                                             <lightning-button label="Remove" variant="neutral" value={ind} onclick={removeRow}></lightning-button>
                                             <lightning-button name="singleRowSave" label="Save Pick" class="slds-p-around_xx-small" variant="success" onclick={saveData}></lightning-button>
+                                            <lightning-button name="getAIInsights" label="Get AI Insights" class="slds-p-around_xx-small" variant="brand"></lightning-button>
                                         </td>
                                     </tr>
                                 </template>
@@ -106,7 +107,7 @@
             <template lwc:if={validPasscode}>
                 <!--<lightning-button name="multipleRowSave" label="Save Picks" class="slds-p-around_xx-small" variant="brand-outline" onclick={saveData}></lightning-button>-->
                 <lightning-button lwc:if={canAddRow} name="multipleRowAddition" label="Add Row" class="slds-p-around_xx-small" variant="brand" onclick={addRow}></lightning-button>
-                <lightning-button name="multipleRowRemoval" class="slds-p-around_xx-small" label="Remove Row" variant="destructive" onclick={removeRow}></lightning-button>
+                <!--<lightning-button name="multipleRowRemoval" class="slds-p-around_xx-small" label="Remove Row" variant="destructive" onclick={removeRow}></lightning-button>-->
             </template>
         </div>
     </lightning-card> 
