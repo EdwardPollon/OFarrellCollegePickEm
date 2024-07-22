@@ -43,6 +43,7 @@ public with sharing class BowlGameUtil {
             
             if(!yearsParticipatedToUpdate.isEmpty()){
                 try{
+                    System.debug('yearsParticipatedToUpdate: ' + yearsParticipatedToUpdate);
                     update yearsParticipatedToUpdate;
                     setKeyParticipants(yearsParticipatedToUpdate);
                 }
@@ -54,11 +55,16 @@ public with sharing class BowlGameUtil {
     }
 
     public static void setKeyParticipants(List<Year_Participated__c> yearsParticipated) {
+        System.debug('The setKeyParticipants() method was executed.');
         Year__c activeYear = [SELECT Id, First_Place__c, Second_Place__c, Last_Place_DFL__c FROM Year__c WHERE Active__c = true LIMIT 1];
         List<Year_Participated__c> ypList = [SELECT Id, Participant__c FROM Year_Participated__c WHERE Id IN :yearsParticipated ORDER BY Earned_Points__c DESC];
-        activeYear.First_Place__c = ypList[0].Participant__c;
-        activeYear.Second_Place__c = ypList[1].Participant__c;
-        activeYear.Last_Place_DFL__c = ypList[ypList.size()-1].Participant__c;
+        if(ypList.size() > 0) {
+            activeYear.First_Place__c = ypList[0].Participant__c;
+            if(ypList.size() > 1) {
+                activeYear.Second_Place__c = ypList[1].Participant__c;
+                activeYear.Last_Place_DFL__c = ypList[ypList.size()-1].Participant__c;
+            }
+        }
         try{
             update activeYear;
         }
