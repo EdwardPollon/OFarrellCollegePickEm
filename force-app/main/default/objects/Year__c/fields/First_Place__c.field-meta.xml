@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>First_Place__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>First Place</label>
+    <referenceTo>Participant__c</referenceTo>
+    <relationshipLabel>Years They Won</relationshipLabel>
+    <relationshipName>Years_They_Won</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

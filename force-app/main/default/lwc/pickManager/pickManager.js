@@ -3,7 +3,6 @@ import getCurrentParticipantsPicks from '@salesforce/apex/PickManager.getCurrent
 import deletePickHandler from '@salesforce/apex/PickManager.deletePickHandler';
 import insertPickData from '@salesforce/apex/PickManager.savePickData';
 import getTeams from '@salesforce/apex/PickManager.getTeams';
-import getBowlGames from '@salesforce/apex/PickManager.getBowlGames';
 import getBowlGameName from '@salesforce/apex/PickManager.getBowlGameName';
 import validatePasscode from '@salesforce/apex/PickManager.validatePasscode';
 import getCurrentParticipantId from '@salesforce/apex/PickManager.getCurrentParticipantId';
@@ -179,17 +178,6 @@ export default class MultiRecordCreation extends LightningElement {
         this.welcomeMessage = 'Hey ' + Name + '! Place your picks below.'
     }
 
-    // addFirstRow(){
-    //     this.index++;
-    //     let i = this.index;
-    //     let newPick = new Object();
-    //     let blankRow = this.blankRow;
-    //     newPick.Id = i;
-    //     newPick.isChecked = false;
-    //     blankRow.push(newPick);
-    //     this.blankRow = blankRow; 
-    // }
-
     removeRow(event){
         const eventName = event.target.name;
         let blankRow = this.blankRow;
@@ -289,7 +277,6 @@ export default class MultiRecordCreation extends LightningElement {
                 this.teamOptions = [];
                 this.getPointValues(this.currentYearId, this.participantId);
                 this.getBowlGames(this.currentYearId, this.participantId);
-                //ADD LOGIC HERE TO REMOVE THE SELECTED BOWL GAME FROM THE LIST OF GAMES
             }).catch(error => {
                 window.alert('Please contact system admin: ' + JSON.stringify(error));
             })

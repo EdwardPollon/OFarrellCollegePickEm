@@ -1,22 +1,5 @@
 public with sharing class PickManager {
 
-    // public static void createPicks(string participantPasscode) {
-    //     Participant__c participant = Database.query('SELECT Id FROM Participant__c WHERE Passcode__c = ' + participantPasscode + 'LIMIT 1');
-    //     List<Bowl_Game__c> bowlGames = [SELECT Id, Year__c FROM Bowl_Game__c WHERE Year__c = 'a008b00001ji1bSAAQ'];
-
-    //     for(Bowl_Game__c bg : bowlGames) {
-    //         Pick__c pick = new Pick__c(
-    //             Bowl_Game__c = bg.Id,
-    //             Picked_By__c = participant.Id,
-    //             Assigned_Points__c = 0
-    //         );
-    //     }
-    // }
-
-    // public static void editPicks(String participantPasscode) {
-    //     List<Pick__c> existingPicks = [SELECT Id, Winner__c, Assigned_Points__c FROM Pick__c WHERE Picked_By__r.Passcode__c = :participantPasscode];
-    // }
-
     @AuraEnabled(cacheable=true)
     public static List<String> getTeams(Id yrId, Id gameId){
         List<String> teams = new List<String>();
@@ -26,11 +9,6 @@ public with sharing class PickManager {
             teams.add(bg.Away_Team__c);
         }
         return teams;
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static List<Bowl_Game__c> getBowlGames(Id yrId){
-        return [SELECT Id, Name, Home_Team__c, Away_Team__c FROM Bowl_Game__c WHERE Year__c = :yrId];
     }
 
     @AuraEnabled(cacheable=true)

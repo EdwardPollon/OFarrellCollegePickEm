@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Earned_Points__c</fullName>
+    <description>This will be the sum of the &apos;Assigned Points&apos; fields for all of the participants&apos; correct picks. Automatically calculated by an Apex job.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This will be the sum of the &apos;Assigned Points&apos; fields for all of the participants&apos; correct picks. Automatically calculated by an Apex job.</inlineHelpText>
+    <label>Earned Points</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

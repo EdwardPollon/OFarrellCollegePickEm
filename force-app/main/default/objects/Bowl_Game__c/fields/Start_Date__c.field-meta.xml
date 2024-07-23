@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Start_Date__c</fullName>
+    <description>Date the Bowl Game will be played on. Pulled in from the external college football API.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Date the Bowl Game will be played on. Pulled in from the external college football API.</inlineHelpText>
+    <label>Start Date</label>
+    <length>255</length>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

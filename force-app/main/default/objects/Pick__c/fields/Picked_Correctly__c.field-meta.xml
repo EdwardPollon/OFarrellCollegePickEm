@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Picked_Correctly__c</fullName>
+    <formula>IF(Winner__c = Bowl_Game__r.Winner__c, true, false)</formula>
+    <label>Picked Correctly?</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

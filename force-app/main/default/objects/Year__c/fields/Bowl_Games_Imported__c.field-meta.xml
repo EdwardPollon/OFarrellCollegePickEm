@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bowl_Games_Imported__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>This field will get checked once the Bowl Games for a particular year have been imported. If checked, the &apos;Import Bowl Games&apos; button will be rendered disabled.</description>
+    <inlineHelpText>This field will get checked once the Bowl Games for a particular year have been imported. If checked, the &apos;Import Bowl Games&apos; button will be rendered disabled.</inlineHelpText>
+    <label>Bowl Games Imported</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
