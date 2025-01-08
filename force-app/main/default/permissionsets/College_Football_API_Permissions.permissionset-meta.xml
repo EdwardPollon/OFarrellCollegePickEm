@@ -4,6 +4,10 @@
         <enabled>true</enabled>
         <externalCredentialPrincipal>College_Football_API_External_Credential-College_Football_API</externalCredentialPrincipal>
     </externalCredentialPrincipalAccesses>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal>Google_Gemini_External_Credential-GoogleGeminiAPI</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
     <hasActivationRequired>false</hasActivationRequired>
     <label>College Football API Permissions</label>
 </PermissionSet>

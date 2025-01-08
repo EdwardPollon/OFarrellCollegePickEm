@@ -11,7 +11,7 @@ public class CollegeFootballCallout {
 
         for(CollegeFootballWrapper bowlGame : wrapper){
             Bowl_Game__c bg = new Bowl_Game__c();
-            bg.Name = bowlGame.notes;
+            bg.Name = bowlGame.notes.left(80); //the name field can only be 80 characters long
             bg.Year__c = yearId;
             bg.Game_ID__c = String.valueOf(bowlGame.id);
             bg.Home_Team__c = bowlGame.home_team;

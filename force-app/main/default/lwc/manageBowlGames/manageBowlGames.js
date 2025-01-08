@@ -8,7 +8,6 @@ import BOWL_GAMES_IMPORTED_FIELD from '@salesforce/schema/Year__c.Bowl_Games_Imp
 export default class ImportBowlGames extends LightningElement {
     @api
     recordId;
-    canDeleteBowlGames;
     @wire(getRecord, { 
         recordId: '$recordId', 
         fields: [BOWL_GAMES_IMPORTED_FIELD] 
@@ -30,11 +29,6 @@ export default class ImportBowlGames extends LightningElement {
 
     updateBowlGames() {
         updateBowlGames({yearId: this.recordId});
-        window.location.reload();
-    }
-    
-    importBowlGames() {
-        importBowlGames({yearId: this.recordId});
         window.location.reload();
     }
 

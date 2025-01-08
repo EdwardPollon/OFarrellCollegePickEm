@@ -10,6 +10,7 @@ import getCurrentParticipantName from '@salesforce/apex/PickManager.getCurrentPa
 import getActiveYearId from '@salesforce/apex/PickManager.getActiveYearId';
 import getAvailablePointValues from '@salesforce/apex/PickManager.getAvailablePointValues';
 import getAvailableBowlGames from '@salesforce/apex/PickManager.getAvailableBowlGames';
+import callGoogleGemini from '@salesforce/apex/GoogleGeminiCallout.callGoogleGemini';
 
 export default class MultiRecordCreation extends LightningElement {
     @track pickDataWrp;
@@ -26,6 +27,9 @@ export default class MultiRecordCreation extends LightningElement {
     @track gameOptions;
     @track pointOptions;
     @track canAddRow = true;
+    @track bowlGameName;
+    @track insights;
+    @track isLoading = false;
 
     @wire(getActiveYearId)
     wiredYear({error,data}){
@@ -175,7 +179,7 @@ export default class MultiRecordCreation extends LightningElement {
     }
 
     setWelcomeMessage(Name){
-        this.welcomeMessage = 'Hey ' + Name + '! Place your picks below.'
+        this.welcomeMessage = 'Hey ' + Name + '! Place your picks below. You can select the winner of each game and assign a point value to each pick. The more confident you are in a pick, the more points you should assign to it.'
     }
 
     removeRow(event){
@@ -209,6 +213,7 @@ export default class MultiRecordCreation extends LightningElement {
         blankRow[eventName].GameId = event.target.value;
         getBowlGameName({bowlGameId: event.target.value}).then(result => {
             console.log('result: ' + result);
+            this.bowlGameName = result;
             blankRow[eventName].GameName = result;
         }).catch(error => {
             window.alert(JSON.stringify(error));
@@ -288,10 +293,24 @@ export default class MultiRecordCreation extends LightningElement {
     setCheckBox(event){
         let blankrow = this.blankRow;
         if(blankrow[event.target.name].isChecked){
-            blankrow[event.target.name].isChecked = false;
+            blankrow[event.target.name].isChecked = false; 
         }else{
             blankrow[event.target.name].isChecked = true;
         }
         this.blankRow = blankrow;
+    }
+
+    getAIInsights(){
+        this.isLoading = true;
+        console.log('ai insights called');
+        let googleGeminiPrompt = 'Give me details about the ' + this.bowlGameName + ' bowl game';
+        console.log('googleGeminiPrompt: ' + googleGeminiPrompt);
+        callGoogleGemini({prompt: googleGeminiPrompt}).then(result => {
+            console.log('insights: ' + result);
+            this.insights = result;
+            this.isLoading = false;
+        }).catch(error => {
+            window.alert(JSON.stringify(error));
+        })
     }
 }
