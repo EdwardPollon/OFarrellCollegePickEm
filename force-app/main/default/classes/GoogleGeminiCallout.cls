@@ -4,10 +4,11 @@ public class GoogleGeminiCallout {
     public static String callGoogleGemini(String prompt){
 
         String googleGeminiResponse = '';
+        String apiKey = System.Label.Google_Gemini_API_Key;
         Http http = new Http();
     	HttpRequest req = new HttpRequest();
         // set endpoint URL using named credential and HTTP method
-    	req.setEndpoint('callout:GoogleGemini' + '?key=' + 'AIzaSyA9mqS9fnrZ-hJzOuSBwp_DsrDiVdqG2fg');
+    	req.setEndpoint('callout:GoogleGemini' + '?key=' + apiKey);
         req.setHeader('Content-Type', 'application/json');
     	req.setMethod('POST');
         
